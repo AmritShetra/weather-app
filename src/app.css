@@ -1,0 +1,12 @@
+body {
+    background: rgb(182,205,213);
+    background: linear-gradient(90deg, rgba(182,205,213,1) 36%, rgba(140,196,224,1) 85%);
+}
+
+#footer {
+    position: absolute;
+    width: 100vw;
+    left: 0;
+    bottom: 1%;
+	text-align: center;
+}
