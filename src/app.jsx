@@ -5,7 +5,7 @@ import './app.css';
 // ISO 8601 to 12 hour, e.g. 2023-02-24T18:00 = 6 PM
 function convertTimestamp(timestamp) {
     return new Date(timestamp).toLocaleTimeString(
-        'en-US', {hour12: true, hour: 'numeric'}
+        'en-GB', {hour12: true, hour: 'numeric'}
     );
 }
 
@@ -17,6 +17,7 @@ class App extends React.Component {
         'windspeed': '',
         'weathercode': '',
         'time': '',
+        'date': '',
         'forecasts': [],
         'loaded': false
     }
@@ -28,7 +29,12 @@ class App extends React.Component {
                 let latitude = position.coords.latitude;
                 let longitude = position.coords.longitude;
 
-                let date = new Date().toJSON().slice(0, 10);
+                let options = {weekday: 'long', day: 'numeric', month: 'long'};
+                let date = new Date();
+                self.setState({date: date.toLocaleDateString('en-GB', options)});
+                // Convert to (yyyy-mm-dd)
+                date = date.toJSON().slice(0, 10);
+
                 axios.get(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&hourly=temperature_2m&timezone=auto&current_weather=true&start_date=${date}&end_date=${date}`)
                     .then(res => {
                         // console.log(JSON.stringify(res.data, null, 2));
@@ -78,12 +84,18 @@ class App extends React.Component {
                 {this.state.loaded ?
                 // Display if data is loaded
                 <div>
-                    <h3>It is...</h3>
-                    <h2>{this.state.temp}°C</h2>
-
-                    Time: {this.state.time} <br/>
-                    Timezone: {this.state.timezone} <br/>
-                    Windspeed: {this.state.windspeed} <br/>
+                    <div id='main-card'>
+                        <div class='box' id='left'>
+                            <h1>{this.state.temp}°C</h1>
+                            <h3>{this.state.weathercode}</h3>
+                            <h4>Wind speed: {this.state.windspeed} km/h</h4>
+                        </div>
+                        <div class='box' id='right'>
+                            <h2>{this.state.date}</h2>
+                            <h3>{this.state.time}</h3>
+                            <h4>{this.state.timezone}</h4>
+                        </div>
+                    </div>
                     <br/>
                     {this.state.forecasts.map(day => 
                         <div key={day['time']}>

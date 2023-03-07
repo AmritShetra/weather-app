@@ -1,6 +1,23 @@
 body {
     background: rgb(182,205,213);
     background: linear-gradient(90deg, rgba(182,205,213,1) 36%, rgba(140,196,224,1) 85%);
+    font-family: 'Montserrat', serif;
+}
+  
+#main-card {
+    background: lightgrey;
+    width: fit-content;
+    margin: auto;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+    display: flex;
+}
+
+.box {
+    margin: 10px 50px 10px 50px;
+}
+
+#right {
+    text-align: right;
 }
 
 #footer {

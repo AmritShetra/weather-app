@@ -5,3 +5,4 @@ A web application that displays today's weather forecast after detecting your lo
 * React
 * [Open-Meteo API](https://open-meteo.com/)
 * [CSS Gradient](cssgradient.io)
+* [Montserrat font](https://fonts.google.com/specimen/Montserrat)
