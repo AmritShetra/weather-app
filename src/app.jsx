@@ -2,13 +2,6 @@ import React from "react";
 import axios from 'axios';
 import './app.css';
 
-// ISO 8601 to 12 hour, e.g. 2023-02-24T18:00 = 6 PM
-function convertTimestamp(timestamp) {
-    return new Date(timestamp).toLocaleTimeString(
-        'en-GB', {hour12: true, hour: 'numeric'}
-    );
-}
-
 class App extends React.Component {
 
     state = {
@@ -45,7 +38,7 @@ class App extends React.Component {
                         let currentData = data['current_weather'];
                         self.setState({temp: currentData['temperature']});
                         self.setState({windspeed: currentData['windspeed']});
-                        self.setState({weathercode: currentData['weathercode']});
+                        self.setState({weathercode: convertWeathercode(currentData['weathercode'])});
                     
                         let currentTime = convertTimestamp(currentData['time']);
                         self.setState({time: currentTime});
@@ -85,12 +78,12 @@ class App extends React.Component {
                 // Display if data is loaded
                 <div>
                     <div id='main-card'>
-                        <div class='box' id='left'>
+                        <div className='box' id='left'>
                             <h1>{this.state.temp}°C</h1>
                             <h3>{this.state.weathercode}</h3>
                             <h4>Wind speed: {this.state.windspeed} km/h</h4>
                         </div>
-                        <div class='box' id='right'>
+                        <div className='box' id='right'>
                             <h2>{this.state.date}</h2>
                             <h3>{this.state.time}</h3>
                             <h4>{this.state.timezone}</h4>
@@ -116,29 +109,46 @@ class App extends React.Component {
             </div>
         );
     }
-
-
 }
 
 export default App;
 
-/* 
-https://open-meteo.com/en/docs
+// ISO 8601 to 12 hour, e.g. 2023-02-24T18:00 = 6 PM
+function convertTimestamp(timestamp) {
+    return new Date(timestamp).toLocaleTimeString(
+        'en-GB', {hour12: true, hour: 'numeric'}
+    );
+}
 
-Code 	        Description
-0 	            Clear sky
-1, 2, 3 	    Mainly clear, partly cloudy, and overcast
-45, 48 	        Fog and depositing rime fog
-51, 53, 55 	    Drizzle: Light, moderate, and dense intensity
-56, 57 	        Freezing Drizzle: Light and dense intensity
-61, 63, 65 	    Rain: Slight, moderate and heavy intensity
-66, 67 	        Freezing Rain: Light and heavy intensity
-71, 73, 75 	    Snow fall: Slight, moderate, and heavy intensity
-77 	            Snow grains
-80, 81, 82 	    Rain showers: Slight, moderate, and violent
-85, 86 	        Snow showers slight and heavy
-95 * 	        Thunderstorm: Slight or moderate
-96, 99 * 	    Thunderstorm with slight and heavy hail
-
-(*) Thunderstorm forecast with hail is only available in Central Europe
-*/
+// https://open-meteo.com/en/docs
+function convertWeathercode(number){
+    switch(number) {
+        case 0: return "Clear sky";
+        case 1: return "Mainly clear";
+        case 3: return "Overcast";
+        case 45: return "Fog";
+        case 48: return "Depositing rime fog";
+        case 51: return "Light drizzle";
+        case 53: return "Moderate drizzle";
+        case 55: return "Heavy drizzle";
+        case 56: return "Light freezing drizzle";
+        case 57: return "Heavy freezing drizzle";
+        case 61: return "Light rain";
+        case 63: return "Moderate rain";
+        case 65: return "Heavy rain";
+        case 66: return "Light freezing rain";
+        case 67: return "Heavy freezing rain";
+        case 71: return "Light snow fall";
+        case 73: return "Moderate snow fall";
+        case 75: return "Heavy snow fall";
+        case 77: return "Snow grains";
+        case 80: return "Light rain showers";
+        case 81: return "Moderate rain showers";
+        case 82: return "Heavy rain showers";
+        case 85: return "Light snow showers";
+        case 86: return "Heavy snow showers";
+        case 95: return "Thunderstorm";
+        case 96: return "Thunderstorm with light hail";
+        case 99: return "Thunderstorm with heavy hail";
+    }
+}
