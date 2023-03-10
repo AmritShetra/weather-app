@@ -4,15 +4,23 @@ import './app.css';
 
 class App extends React.Component {
 
-    state = {
-        'timezone': '',
-        'temp': '',
-        'windspeed': '',
-        'weathercode': '',
-        'time': '',
-        'date': '',
-        'forecasts': [],
-        'loaded': false
+    constructor(props) {
+        super(props);
+        
+        this.state = {
+            'timezone': '',
+            'temp': '',
+            'windspeed': '',
+            'weathercode': '',
+            'time': '',
+            'date': '',
+            'forecasts': [],
+            'loaded': false,
+            'scale': '°C',
+            'tempF': ''
+        }
+
+        this.changeScale = this.changeScale.bind(this);
     }
 
     componentDidMount() {
@@ -71,6 +79,21 @@ class App extends React.Component {
         )
     }
 
+    changeScale() {
+        if (this.state.scale === '°C') {
+            this.setState({scale: '°F'});
+            if (this.state.tempF === '') {
+                let temp = (this.state.temp * (9/5)) + 32;
+                temp = temp.toFixed(1);         // 1 decimal place
+                temp = parseFloat(temp);        // Convert string back to number
+                this.setState({tempF: temp});
+            }
+        }
+        else {
+            this.setState({scale: '°C'});
+        }
+    }
+
     render() {
         return (
             <div>
@@ -79,7 +102,10 @@ class App extends React.Component {
                 <div>
                     <div id='main-card'>
                         <div className='box' id='left'>
-                            <h1>{this.state.temp}°C</h1>
+                            <h1>   
+                                {this.state.scale === '°C' ? this.state.temp : this.state.tempF}
+                                <span onClick={this.changeScale}>{this.state.scale}</span>
+                            </h1>
                             <h3>{this.state.weathercode}</h3>
                             <h4>Wind speed: {this.state.windspeed} km/h</h4>
                         </div>

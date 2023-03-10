@@ -20,6 +20,15 @@ body {
     text-align: right;
 }
 
+span {
+    transition: color 0.5s;
+}
+
+span:hover {
+    color: rgba(99, 138, 182, 0.8);
+    cursor: pointer;
+}
+
 #footer {
     position: absolute;
     width: 100vw;
