@@ -1,6 +1,8 @@
 import React from "react";
 import axios from 'axios';
 import './app.css';
+import { convertTimestamp, convertWeathercode } from './conversion.js'
+import WeatherIcon  from "./WeatherIcon";
 
 class App extends React.Component {
 
@@ -12,12 +14,16 @@ class App extends React.Component {
             'temp': '',
             'windspeed': '',
             'weathercode': '',
+            'weathercode_desc': '',
             'time': '',
+            'timestamp': '',
             'date': '',
             'forecasts': [],
             'loaded': false,
             'scale': '°C',
-            'tempF': ''
+            'tempF': '',
+            'sunrise': '',
+            'sunset': ''
         }
 
         this.changeScale = this.changeScale.bind(this);
@@ -36,20 +42,23 @@ class App extends React.Component {
                 // Convert to (yyyy-mm-dd)
                 date = date.toJSON().slice(0, 10);
 
-                axios.get(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&hourly=temperature_2m&timezone=auto&current_weather=true&start_date=${date}&end_date=${date}`)
+                axios.get(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&hourly=temperature_2m&daily=sunrise,sunset&timezone=auto&current_weather=true&start_date=${date}&end_date=${date}`)
                     .then(res => {
-                        // console.log(JSON.stringify(res.data, null, 2));
-
                         let data = res.data;
                         self.setState({timezone: data['timezone_abbreviation']});
 
                         let currentData = data['current_weather'];
                         self.setState({temp: currentData['temperature']});
                         self.setState({windspeed: currentData['windspeed']});
-                        self.setState({weathercode: convertWeathercode(currentData['weathercode'])});
-                    
+                        self.setState({weathercode: currentData['weathercode']})
+                        self.setState({weathercode_desc: convertWeathercode(currentData['weathercode'])});
+
+                        self.setState({timestamp: currentData['time']});
                         let currentTime = convertTimestamp(currentData['time']);
                         self.setState({time: currentTime});
+
+                        self.setState({sunrise: data['daily']['sunrise'][0]});
+                        self.setState({sunset: data['daily']['sunset'][0]});
 
                         let hourlyForecasts = [];
 
@@ -102,11 +111,12 @@ class App extends React.Component {
                 <div>
                     <div id='main-card'>
                         <div className='box' id='left'>
+                            <WeatherIcon code={this.state.weathercode} time={this.state.timestamp} sunrise={this.state.sunrise} sunset={this.state.sunset} />
                             <h1>   
                                 {this.state.scale === '°C' ? this.state.temp : this.state.tempF}
                                 <span onClick={this.changeScale}>{this.state.scale}</span>
                             </h1>
-                            <h3>{this.state.weathercode}</h3>
+                            <h3>{this.state.weathercode_desc}</h3>
                             <h4>Wind speed: {this.state.windspeed} km/h</h4>
                         </div>
                         <div className='box' id='right'>
@@ -138,43 +148,3 @@ class App extends React.Component {
 }
 
 export default App;
-
-// ISO 8601 to 12 hour, e.g. 2023-02-24T18:00 = 6 PM
-function convertTimestamp(timestamp) {
-    return new Date(timestamp).toLocaleTimeString(
-        'en-GB', {hour12: true, hour: 'numeric'}
-    );
-}
-
-// https://open-meteo.com/en/docs
-function convertWeathercode(number){
-    switch(number) {
-        case 0: return "Clear sky";
-        case 1: return "Mainly clear";
-        case 3: return "Overcast";
-        case 45: return "Fog";
-        case 48: return "Depositing rime fog";
-        case 51: return "Light drizzle";
-        case 53: return "Moderate drizzle";
-        case 55: return "Heavy drizzle";
-        case 56: return "Light freezing drizzle";
-        case 57: return "Heavy freezing drizzle";
-        case 61: return "Light rain";
-        case 63: return "Moderate rain";
-        case 65: return "Heavy rain";
-        case 66: return "Light freezing rain";
-        case 67: return "Heavy freezing rain";
-        case 71: return "Light snow fall";
-        case 73: return "Moderate snow fall";
-        case 75: return "Heavy snow fall";
-        case 77: return "Snow grains";
-        case 80: return "Light rain showers";
-        case 81: return "Moderate rain showers";
-        case 82: return "Heavy rain showers";
-        case 85: return "Light snow showers";
-        case 86: return "Heavy snow showers";
-        case 95: return "Thunderstorm";
-        case 96: return "Thunderstorm with light hail";
-        case 99: return "Thunderstorm with heavy hail";
-    }
-}
