@@ -1,5 +1,6 @@
 import clearDay from './icons/clear-day.svg';
 import clearNight from './icons/clear-night.svg';
+import cloudy from './icons/cloudy.svg';
 import overcast from './icons/overcast.svg';
 import fog from './icons/fog.svg';
 import drizzle from './icons/drizzle.svg';
@@ -19,6 +20,9 @@ export default function WeatherIcon(props) {
             else {
                 icon = clearNight;
             }
+            break;
+        case 2:
+            icon = cloudy;
             break;
         case 3:
             icon = overcast;
