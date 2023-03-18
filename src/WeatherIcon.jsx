@@ -33,10 +33,10 @@ export default function WeatherIcon(props) {
         case 51: case 53: case 55: case 56: case 57:
             icon = drizzle;
             break;
-        case 61: case 63: case 65: case 66: case 67:
+        case 61: case 63: case 65: case 66: case 67: case 80: case 81: case 82:
             icon = rain;
             break;
-        case 71: case 73: case 75: case 77:
+        case 71: case 73: case 75: case 77: case 85: case 86:
             icon = snow;
             break;
         case 95:
