@@ -29,6 +29,20 @@ span:hover {
     cursor: pointer;
 }
 
+#row {
+    display: flex;
+    flex-direction: row;
+    max-width: 75%;
+    margin: auto;
+    overflow: auto;
+    gap: 70px;
+    padding: 50px;
+}
+
+#row #weather-card {
+    box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+}
+
 #footer {
     position: absolute;
     width: 100vw;

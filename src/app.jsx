@@ -3,6 +3,7 @@ import axios from 'axios';
 import './app.css';
 import { convertTimestamp, convertWeathercode } from './conversion.js'
 import WeatherIcon  from "./WeatherIcon";
+import WeatherCard from "./WeatherCard";
 
 class App extends React.Component {
 
@@ -42,7 +43,7 @@ class App extends React.Component {
                 // Convert to (yyyy-mm-dd)
                 date = date.toJSON().slice(0, 10);
 
-                axios.get(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&hourly=temperature_2m&daily=sunrise,sunset&timezone=auto&current_weather=true&start_date=${date}&end_date=${date}`)
+                axios.get(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&hourly=temperature_2m,weathercode&daily=sunrise,sunset&timezone=auto&current_weather=true&start_date=${date}&end_date=${date}`)
                     .then(res => {
                         let data = res.data;
                         self.setState({timezone: data['timezone_abbreviation']});
@@ -62,21 +63,24 @@ class App extends React.Component {
 
                         let hourlyForecasts = [];
 
-                        // Get today's times & temperatures
+                        // Get today's times, temperatures & weathercodes
                         let times = data['hourly']['time'];
                         let temps = data['hourly']['temperature_2m'];
+                        let codes = data['hourly']['weathercode'];
                         
-                        // We only want times & temperatures for the rest of the day
+                        // We only want times, temperatures & weathercodes for the rest of the day
                         let indexOfNextHour = times.indexOf(currentData['time']) + 1;
                         times = times.slice(indexOfNextHour);
                         temps = temps.slice(indexOfNextHour);
+                        codes = codes.slice(indexOfNextHour);
 
-                        // Combine both lists into an array where each entry has an hour and temperature
+                        // Combine all lists into an array where each entry has an hour, temperature, and weathercode
                         for (let i = 0; i < times.length; i++) {
                             hourlyForecasts.push(
                                 {
                                     'time': convertTimestamp(times[i]),
-                                    'temp': temps[i]
+                                    'temp': temps[i],
+                                    'weathercode': codes[i]
                                 }
                             )
                         }
@@ -126,11 +130,11 @@ class App extends React.Component {
                         </div>
                     </div>
                     <br/>
-                    {this.state.forecasts.map(day => 
-                        <div key={day['time']}>
-                            {day['time']}: {day['temp']}°C
-                        </div>)
-                    }
+                    <div id='row'>
+                        {this.state.forecasts.map(day => 
+                            <WeatherCard time={day.time} temp={day.temp} scale={this.state.scale} weathercode={day.weathercode} changeScale={this.changeScale} sunrise={this.state.sunrise} sunset={this.state.sunset} />
+                        )}
+                    </div>
 
                     <div id='footer'>
                         <a href="https://open-meteo.com/">Weather data by Open-Meteo.com</a>
