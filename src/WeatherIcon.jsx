@@ -12,7 +12,7 @@ import thunderstormsRain from './icons/thunderstorms-rain.svg';
 export default function WeatherIcon(props) {
     let icon;
 
-    switch(props.code) {
+    switch(props.weathercode) {
         case 0: case 1:
             if (props.time > props.sunrise && props.time < props.sunset) {
                 icon = clearDay;

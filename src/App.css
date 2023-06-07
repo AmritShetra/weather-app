@@ -3,11 +3,20 @@ body {
     background: linear-gradient(90deg, rgba(182,205,213,1) 36%, rgba(140,196,224,1) 85%);
     font-family: 'Montserrat', serif;
 }
+
+#loading {
+    position: absolute;
+    top:  50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    font-size: 20px;
+}
   
 #main-card {
     background: lightgrey;
     width: fit-content;
     margin: auto;
+    margin-top: 20px;
     box-shadow: 0 8px 16px rgba(0,0,0,0.2);
     display: flex;
 }
@@ -35,12 +44,20 @@ span:hover {
     max-width: 75%;
     margin: auto;
     overflow: auto;
-    gap: 70px;
+    gap: 43px;
     padding: 50px;
 }
 
 #row #weather-card {
     box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+}
+
+#row #weather-card:first-child {
+    margin-left: auto;
+}
+
+#row #weather-card:last-child {
+    margin-right: auto;
 }
 
 #footer {

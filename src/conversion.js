@@ -38,3 +38,10 @@ export function convertWeathercode(number){
         case 99: return "Thunderstorm with heavy hail";
     }
 }
+
+export function convertToF(tempC) {
+    let temp = (tempC * (9/5)) + 32;
+    temp = temp.toFixed(1);                 // 1 decimal place
+    temp = parseFloat(temp);                // Convert string back to number
+    return temp;
+}
