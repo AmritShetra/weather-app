@@ -156,9 +156,11 @@ export default function App() {
                         <a href="https://open-meteo.com/">Weather data by Open-Meteo.com</a>
                     </div>
                 </div>
-            :  
-                <div id="loading">
-                    Finding out your location...
+            :
+                <div id='loading-row'>
+                    <div id='left'></div>
+                    <div id='middle'>Finding out your location</div>
+                    <div id='dots'></div>
                 </div>
             }
         </div>

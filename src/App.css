@@ -1,17 +1,37 @@
 body {
-    background: rgb(182,205,213);
     background: linear-gradient(90deg, rgba(182,205,213,1) 36%, rgba(140,196,224,1) 85%);
     font-family: 'Montserrat', serif;
+    margin: 0;
+    padding: 0;
 }
 
-#loading {
-    position: absolute;
-    top:  50%;
-    left: 50%;
-    transform: translate(-50%,-50%);
-    font-size: 20px;
+#loading-row {
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+    align-items: center;
+    font-size: 22px;
 }
-  
+
+#left, #dots {
+    flex: 1;
+}
+
+#dots:after {
+    content: '';
+    animation-name: ellipsis;
+    animation-duration: 3s;
+    animation-iteration-count: infinite;
+}
+
+@keyframes ellipsis {
+    0% {content: '';}
+    25% {content: '.';}
+    50% {content: '..';}
+    75% {content: '...';}
+    100% {content: '';}
+}
+
 #main-card {
     background: lightgrey;
     width: fit-content;
@@ -61,9 +81,6 @@ span:hover {
 }
 
 #footer {
-    position: absolute;
-    width: 100vw;
-    left: 0;
-    bottom: 1%;
+    padding-top: 10px;
 	text-align: center;
 }
