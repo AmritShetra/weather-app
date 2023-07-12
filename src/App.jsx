@@ -5,10 +5,10 @@ import { convertTimestamp, convertWeathercode, convertToF } from './conversion.j
 import WeatherIcon  from "./WeatherIcon";
 import WeatherCard from "./WeatherCard";
 
-export default function App() {
+export default function App(props) {
 
-    const [latitude, setLatitude] = useState();
-    const [longitude, setLongitude] = useState();
+    const latitude = props.latitude;
+    const longitude = props.longitude;
 
     const [currentWeather, setCurrentWeather] = useState();
     const [timezone, setTimezone] = useState();
@@ -23,29 +23,7 @@ export default function App() {
         `en-GB`, {weekday: 'long', day: 'numeric', month: 'long'}
     );
 
-
     useEffect(() => {
-        if (loaded) {
-            return;
-        }
-        navigator.geolocation.watchPosition(
-            function(position) {
-                setLatitude(position.coords.latitude);
-                setLongitude(position.coords.longitude);
-            }
-        )
-    }, [loaded]);
-
-    useEffect(() => {
-        // Stops page from loading extra forecast data when I save code editor
-        if (loaded) { 
-            return; 
-        }
-
-        if (longitude == null || latitude == null) {
-            return;
-        }
-
         // yyyy-mm-dd format
         let date = new Date().toJSON().slice(0, 10);
         let url = `https://api.open-meteo.com/v1/forecast?&`;
@@ -102,7 +80,7 @@ export default function App() {
                 }
                 setLoaded(true);
             });
-    }, [latitude, longitude])
+    }, []);
 
     function changeScale() {
         if (scale === '°C') {
@@ -118,7 +96,7 @@ export default function App() {
             {loaded ?
                 <div>
                     <div id='main-card'>
-                        <div className='box' id='left'>
+                        <div className='box' id='box-left'>
                             <WeatherIcon 
                                 weathercode={currentWeather.weathercode} 
                                 time={currentWeather.time} 
@@ -132,7 +110,7 @@ export default function App() {
                             <h3>{convertWeathercode(currentWeather.weathercode)}</h3>
                             <h4>Wind speed: {currentWeather.windspeed} km/h</h4>
                         </div>
-                        <div className='box' id='right'>
+                        <div className='box' id='box-right'>
                             <h2>{date}</h2>
                             <h3>{convertTimestamp(currentWeather.time)}</h3>
                             <h4>{timezone}</h4>
@@ -156,12 +134,8 @@ export default function App() {
                         <a href="https://open-meteo.com/">Weather data by Open-Meteo.com</a>
                     </div>
                 </div>
-            :
-                <div id='loading-row'>
-                    <div id='left'></div>
-                    <div id='middle'>Finding out your location</div>
-                    <div id='dots'></div>
-                </div>
+                :
+                <div>Loading</div>
             }
         </div>
     );
