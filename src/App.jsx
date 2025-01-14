@@ -60,7 +60,13 @@ export default function App(props) {
                 let codes = data['hourly']['weathercode'];
 
                 // We only want the data for the rest of the day
-                let indexOfNextHour = times.indexOf(data['current_weather']['time']) + 1;
+                // Get current hour from the string (e.g. "2025-01-14T12:00" -> 12)
+                // Convert it to a number
+                let currentHour = Number(
+                    data['current_weather']['time'].slice(11,13)
+                );
+                let indexOfNextHour = currentHour + 1;
+
                 times = times.slice(indexOfNextHour);
                 temps = temps.slice(indexOfNextHour);
                 codes = codes.slice(indexOfNextHour);
